@@ -1,4 +1,7 @@
 import sqlite3 as sql
+from flask_bcrypt import Bcrypt
+
+bcrypt = Bcrypt()
 
 def main():
     dbName = "marisons.db"
@@ -27,7 +30,7 @@ def createDB(name):
     connection = sql.connect(name)
     connection.execute("PRAGMA foreign_keys = 1")
     connection.commit()
-    connection.close() 
+    connection.close()
 
 def createTable_Proveedores(name):
     connection = sql.connect(name)
@@ -176,6 +179,7 @@ def createTable_Usuarios(name):
             id INTEGER PRIMARY KEY,
             Nombre TEXT NO NULL UNIQUE,
             Privilegio INTEGER,
+            Contraseña TEXT NO NULL,
             FOREIGN KEY(Privilegio) REFERENCES Privilegios(id)
         )"""
     )
@@ -224,7 +228,6 @@ def createTable_Inventarios(name):
         """CREATE TABLE Inventarios(
             id INTEGER PRIMARY KEY,
             Fecha TEXT NO NULL,
-            Eliminado INTEGER NO NULL DEFAULT 0
         )"""
     )
     connection.commit()
@@ -292,9 +295,11 @@ def addDefaultValues(name):
         ]
     )
 
-    cursor.execute(
-        """INSERT INTO Usuarios (Nombre, Privilegio) 
-           VALUES ('Usuario Eliminado', 1)"""
+    cursor.executemany(
+        "INSERT INTO Usuarios (Nombre, Privilegio, Contraseña) VALUES (?,?,?)",[
+            ("Usuario Eliminado", 1, bcrypt.generate_password_hash("00000").decode("utf-8")),
+            ("Admin", 4, bcrypt.generate_password_hash("12345").decode("utf-8"))
+        ]
     )
 
     cursor.executemany(

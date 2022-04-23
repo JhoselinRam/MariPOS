@@ -1,13 +1,13 @@
 # MariPOS (Experimental)
 
-### Localhost based web app point of sale software
+### Localhost based web application point of sale software
 
 
 #### Installation
 ______
 
 To install de depencencies open a terminal in the \backend folder and run
->- `python -m venv venv`  (windows)
+>- `python -m venv venv`  (Windows)
 >- `python3 -m venv venv` (Linux/Mac)
 
 
@@ -17,7 +17,7 @@ Then start the virtual environment by running the command
 
 And then
 >- `pip install -r requirements.txt`  (Windows)
->- `pip3 install -r requirements.txt` (Linux/Mac)
+>- `pip install -r requirements.txt` (Linux/Mac)
 
 Update `pip` if needed.
 Exit the virtual environment by running
