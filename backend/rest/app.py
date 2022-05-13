@@ -1,10 +1,13 @@
 from flask import Flask, request, jsonify
 from flask_bcrypt import Bcrypt
 from database import dbServices
+from flask_cors import CORS
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 dbName = "database/marisons.db"
+
+CORS(app)
 
 #---------------- Generics ----------------
 def getRows(table, columns):

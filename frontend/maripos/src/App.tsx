@@ -1,23 +1,14 @@
 import React from 'react';
+import Navigation from './components/Navigation/Navigation';
+import MainSaleWindow from './components/MainSaleWindow/MainSaleWindow';
 
 function App() {
-
-  if(localStorage.getItem("test")==null){
-    checkUsers();
-  }
-
   return (
     <>
-      <h1>Program starts here</h1>
+      <Navigation/>
+      <MainSaleWindow/>
     </>
   );
 }
-
-
-function checkUsers(){
-  const API = process.env.REACT_APP_BACKEND;
-  console.log(API);
-}
-
 
 export default App;
