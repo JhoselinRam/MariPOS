@@ -1,396 +1,479 @@
+import json
+from bson.json_util import dumps, loads
 from flask import Flask, request, jsonify
 from flask_bcrypt import Bcrypt
-from database import dbServices
 from flask_cors import CORS
+from database import dbServices
+from bson.objectid import ObjectId
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
-dbName = "database/marisons.db"
-
-CORS(app)
+#CORS(app)
+dbName = "marison"
 
 #---------------- Generics ----------------
-def getRows(table, columns):
-    rows = dbServices.getRows(dbName, table, columns) 
+def getDocuments(collection, fields):
+    documents = dbServices.getDocuments(dbName, collection, fields) 
 
-    return jsonify(rows)
-
-
-def getRowById(table, columns, id):
-    identifier = ["id", id]
-    row = dbServices.getRowBy(dbName, table, identifier, columns)
-
-    return jsonify(row)
+    return jsonify(json.loads(dumps(documents)))
 
 
-def setRow(table):
-    newRow = request.json
-    if "Contraseña" in newRow[0]:
-        newRow[0]["Contraseña"] = bcrypt.generate_password_hash(newRow[0]["Contraseña"]).decode("utf-8")
-    dbServices.setNewRow(dbName, table, newRow)
+def getDocumentById(collection, fields, id):
+    identifier = ["_id", ObjectId(id)]
+    document = dbServices.getDocumentBy(dbName, collection, identifier, fields)
+
+    return jsonify(json.loads(dumps(document)))
+
+
+def setDocument(collection):
+    newDocument = loads(json.dumps(request.json))
+    for document in newDocument:
+        if "Contraseña" in document:
+            document["Contraseña"] = bcrypt.generate_password_hash(document["Contraseña"]).decode("utf-8")
+    
+    dbServices.setNewDocument(dbName, collection, newDocument)
     
     return jsonify({"mesagge":"success"})
 
-def updateRow(table, id):
-    rowUpdated = request.json
-    if "Contraseña" in rowUpdated[0]:
-        rowUpdated[0]["Contraseña"] = bcrypt.generate_password_hash(rowUpdated[0]["Contraseña"]).decode("utf-8")
-    identifier = [["id", id]]
-    dbServices.updateRow(dbName, table, identifier, rowUpdated)
+def updateDocument(collection, id):
+    documentUpdated = loads(json.dumps(request.json))
+    for document in documentUpdated:
+        if "Contraseña" in document:
+            document["Contraseña"] = bcrypt.generate_password_hash(document["Contraseña"]).decode("utf-8")
+    
+    identifier = [["_id", ObjectId(id)]]
+    dbServices.updateDocument(dbName, collection, identifier, documentUpdated)
     
     return jsonify({"mesagge":"success"})
 
-def deleteRow(table, id):
-    identifier = [["id", id]]
-    dbServices.deleteRow(dbName,table,identifier)
+def deleteDocument(collection, id):
+    identifier = [["_id", ObjectId(id)]]
+    dbServices.deleteDocument(dbName,collection,identifier)
 
     return jsonify({"mesagge":"success"})
+
+
+#------------------------------------------Routes---------------------------------------------------
 
 #------------------------------------------
 #---------------- Usuarios ----------------
 @app.route("/users", methods=["GET"])
 def getUsers():
-    columns = ["id", "Nombre", "Privilegio"]
-    return getRows("Usuarios", columns)
+    fields = ["_id", "Nombre", "Privilegio"]
+    return getDocuments("Usuarios", fields)
 
 
 @app.route("/user/<id>", methods=["GET"])
 def getUserById(id):
-    columns = ["id", "Nombre", "Privilegio"]
-    return getRowById("Usuarios",columns, id)
+    fields = ["_id", "Nombre", "Privilegio"]
+    return getDocumentById("Usuarios", fields, id)
 
 
 @app.route("/user", methods=["POST"])
 def setUser():
-    return setRow("Usuarios")
+    return setDocument("Usuarios")
 
 
 @app.route("/user/<id>", methods=["PUT"])
 def updateUser(id):
-    return updateRow("Usuarios", id)
+    return updateDocument("Usuarios", id)
 
 
 @app.route("/user/<id>", methods=["DELETE"])
 def deletUser(id):
-    return deleteRow("Usuarios", id)
+    return deleteDocument("Usuarios", id)
     
 
-#---------------------------------------------
-#---------------- Proveedores ----------------
+# #---------------------------------------------
+# #---------------- Proveedores ----------------
 
 @app.route("/providers", methods=["GET"])
 def getProvider():
-    columns = ["id", "Descripcion", "RFC"]
-    return getRows("Proveedores", columns)
+    fields = []
+    return getDocuments("Proveedores", fields)
 
 
 @app.route("/provider/<id>", methods=["GET"])
 def getProviderById(id):
-    columns = ["id", "Descripcion", "RFC"]
-    return getRowById("Proveedores",columns, id)
+    fields = []
+    return getDocumentById("Proveedores", fields, id)
 
 
 @app.route("/provider", methods=["POST"])
 def setProvider():
-    return setRow("Proveedores")
+    return setDocument("Proveedores")
 
 
 @app.route("/provider/<id>", methods=["PUT"])
 def updateProvider(id):
-    return updateRow("Proveedores", id)
+    return updateDocument("Proveedores", id)
 
 
 @app.route("/provider/<id>", methods=["DELETE"])
 def deletProvider(id):
-    return deleteRow("Proveedores", id)
+    return deleteDocument("Proveedores", id)
 
 
-#----------------------------------------
-#---------------- Grupos ----------------
+# #----------------------------------------
+# #---------------- Grupos ----------------
 
 
 @app.route("/groups", methods=["GET"])
 def getGroup():
-    columns = ["id", "Descripcion"]
-    return getRows("Grupos", columns)
+    fields = []
+    return getDocuments("Grupos", fields)
 
 
 @app.route("/group/<id>", methods=["GET"])
 def getGroupById(id):
-    columns = ["id", "Descripcion"]
-    return getRowById("Grupos",columns, id)
+    fields = []
+    return getDocumentById("Grupos",fields, id)
 
 
 @app.route("/group", methods=["POST"])
 def setGroup():
-    return setRow("Grupos")
+    return setDocument("Grupos")
 
 
 @app.route("/group/<id>", methods=["PUT"])
 def updateGroup(id):
-    return updateRow("Grupos", id)
+    return updateDocument("Grupos", id)
 
 
 @app.route("/group/<id>", methods=["DELETE"])
 def deletGroup(id):
-    return deleteRow("Grupos", id)
+    return deleteDocument("Grupos", id)
 
 
-#-------------------------------------------
-#---------------- Subgrupos ----------------
+# #-------------------------------------------
+# #---------------- Subgrupos ----------------
 
 
 @app.route("/subgroups", methods=["GET"])
 def getSubgroups():
-    columns = ["id", "Descripcion", "Grupo"]
-    return getRows("Subgrupos", columns)
+    fields = []
+    return getDocuments("Subgrupos", fields)
 
 
 @app.route("/subgroup/<id>", methods=["GET"])
 def getSubgroupById(id):
-    columns = ["id", "Descripcion", "Grupo"]
-    return getRowById("Subgrupos",columns, id)
+    fields = []
+    return getDocumentById("Subgrupos",fields, id)
 
 
 @app.route("/subgroup", methods=["POST"])
 def setSubgroup():
-    return setRow("Subgrupos")
+    return setDocument("Subgrupos")
 
 
 @app.route("/subgroup/<id>", methods=["PUT"])
 def updateSubgroup(id):
-    return updateRow("Subgrupos", id)
+    return updateDocument("Subgrupos", id)
 
 
 @app.route("/subgroup/<id>", methods=["DELETE"])
 def deletSubgroup(id):
-    return deleteRow("Subgrupos", id)
+    return deleteDocument("Subgrupos", id)
 
 
-#-----------------------------------------
-#---------------- Insumos ----------------
+# #-----------------------------------------
+# #---------------- Insumos ----------------
 
 
 @app.route("/supplies", methods=["GET"])
 def getSupplies():
-    columns = ["id", "Descripcion", "Unidad", "UnidadPorPaquete", "CostoPorUnidad", "CostoPublicoPorUnidad", "Existencia", "Grupo", "Subgrupo", "Proveedor", "Activo"]
-    return getRows("Insumos", columns)
+    fields = []
+    return getDocuments("Insumos", fields)
 
 
 @app.route("/supplie/<id>", methods=["GET"])
 def getSupplieById(id):
-    columns = ["id", "Descripcion", "Unidad", "UnidadPorPaquete", "CostoPorUnidad", "CostoPublicoPorUnidad", "Existencia", "Grupo", "Subgrupo", "Proveedor", "Activo"]
-    return getRowById("Insumos",columns, id)
+    fields = []
+    return getDocumentById("Insumos",fields, id)
 
 
 @app.route("/supplie", methods=["POST"])
 def setSupplie():
-    return setRow("Insumos")
+    return setDocument("Insumos")
 
 
 @app.route("/supplie/<id>", methods=["PUT"])
 def updateSupplie(id):
-    return updateRow("Insumos", id)
+    return updateDocument("Insumos", id)
 
 
 @app.route("/supplie/<id>", methods=["DELETE"])
 def deletSupplie(id):
-    return deleteRow("Insumos", id)
+    return deleteDocument("Insumos", id)
 
 
-#------------------------------------------
-#---------------- Clientes ----------------
+# #-----------------------------------------
+# #-------------- Productos ----------------
+
+
+@app.route("/products", methods=["GET"])
+def getProducts():
+    fields = []
+    return getDocuments("Productos", fields)
+
+
+@app.route("/product/<id>", methods=["GET"])
+def getProductById(id):
+    fields = []
+    return getDocumentById("Productos",fields, id)
+
+
+@app.route("/product", methods=["POST"])
+def setProduct():
+    return setDocument("Productos")
+
+
+@app.route("/product/<id>", methods=["PUT"])
+def updateProduct(id):
+    return updateDocument("Productos", id)
+
+
+@app.route("/product/<id>", methods=["DELETE"])
+def deletProduct(id):
+    return deleteDocument("Productos", id)
+
+
+# #------------------------------------------
+# #---------------- Clientes ----------------
 
 
 @app.route("/clients", methods=["GET"])
 def getClients():
-    columns = ["id", "Nombre", "Telefono", "Direccion", "Colonia", "Cruzamiento1, Cruzamiento2"]
-    return getRows("Clientes", columns)
+    fields = []
+    return getDocuments("Clientes", fields)
 
 
 @app.route("/client/<id>", methods=["GET"])
 def getClientById(id):
-    columns = ["id", "Nombre", "Telefono", "Direccion", "Colonia", "Cruzamiento1, Cruzamiento2"]
-    return getRowById("Clientes",columns, id)
+    fields = []
+    return getDocumentById("Clientes",fields, id)
 
 
 @app.route("/client", methods=["POST"])
 def setClient():
-    return setRow("Clientes")
+    return setDocument("Clientes")
 
 
 @app.route("/client/<id>", methods=["PUT"])
 def updateClient(id):
-    return updateRow("Clientes", id)
+    return updateDocument("Clientes", id)
 
 
 @app.route("/client/<id>", methods=["DELETE"])
 def deletClient(id):
-    return deleteRow("Clientes", id)
+    return deleteDocument("Clientes", id)
 
 
-#-----------------------------------------
-#---------------- Tickets ----------------
-
-
-@app.route("/tickets", methods=["GET"])
-def getTickets():
-    columns = ["id", "Total", "Fecha", "Cliente", "Cancelado"]
-    return getRows("Tickets", columns)
-
-
-@app.route("/ticket/<id>", methods=["GET"])
-def getTicketById(id):
-    columns = ["id", "Total", "Fecha", "Cliente", "Cancelado"]
-    return getRowById("Tickets",columns, id)
-
-
-@app.route("/ticket", methods=["POST"])
-def setTicket():
-    return setRow("Tickets")
-
-
-@app.route("/ticket/<id>", methods=["PUT"])
-def updateTicket(id):
-    return updateRow("Tickets", id)
-
-
-#-----------------------------------------
-#---------------- Ventas ----------------
+# #-----------------------------------------
+# #----------------- Ventas ----------------
 
 
 @app.route("/sales", methods=["GET"])
-def getSales():
-    columns = ["Ticket", "Insumo", "Cantidad"]
-    return getRows("Ventas", columns)
+def getTickets():
+    fields = []
+    return getDocuments("Ventas", fields)
 
 
 @app.route("/sale/<id>", methods=["GET"])
-def getSaleById(id):
-    columns = ["Ticket", "Insumo", "Cantidad"]
-    return getRowById("Ventas",columns, id)
+def getTicketById(id):
+    fields = []
+    return getDocumentById("Ventas",fields, id)
 
 
 @app.route("/sale", methods=["POST"])
-def setSale():
-    return setRow("Ventas")
+def setTicket():
+    return setDocument("Ventas")
 
 
 @app.route("/sale/<id>", methods=["PUT"])
-def updateSale(id):
-    return updateRow("Ventas", id)
+def updateTicket(id):
+    return updateDocument("Ventas", id)
 
 
-@app.route("/sale/<id>", methods=["DELETE"])
-def deletSale(id):
-    return deleteRow("Ventas", id)
+# #-----------------------------------------
+# #------------- Descuentos ----------------
 
 
-#---------------------------------------------
-#---------------- Privilegios ----------------
+@app.route("/discounts", methods=["GET"])
+def getDiscounts():
+    fields = []
+    return getDocuments("Descuentos", fields)
+
+
+@app.route("/discount/<id>", methods=["GET"])
+def getDiscountById(id):
+    fields = []
+    return getDocumentById("Descuentos",fields, id)
+
+
+@app.route("/discount", methods=["POST"])
+def setDiscount():
+    return setDocument("Descuentos")
+
+
+@app.route("/discount/<id>", methods=["PUT"])
+def updateDiscount(id):
+    return updateDocument("Descuentos", id)
+
+
+@app.route("/discount/<id>", methods=["DELETE"])
+def deletDiscount(id):
+    return deleteDocument("Descuentos", id)
+
+
+# #---------------------------------------------
+# #---------------- Privilegios ----------------
 
 
 @app.route("/privileges", methods=["GET"])
 def getPrivileges():
-    columns = ["id", "Descripcion"]
-    return getRows("Privilegios", columns)
+    fields = []
+    return getDocuments("Privilegios", fields)
 
 
 @app.route("/privilege/<id>", methods=["GET"])
 def getPrivilegeById(id):
-    columns = ["id", "Descripcion"]
-    return getRowById("Privilegios",columns, id)
+    fields = []
+    return getDocumentById("Privilegios",fields, id)
 
 
-#------------------------------------------
-#---------------- Acciones ----------------
+# #------------------------------------------
+# #---------------- Acciones ----------------
 
 
 @app.route("/actions", methods=["GET"])
 def getActions():
-    columns = ["id", "Descripcion", "Privilegio"]
-    return getRows("Acciones", columns)
+    fields = []
+    return getDocuments("Acciones", fields)
 
 
 @app.route("/action/<id>", methods=["GET"])
 def getActionById(id):
-    columns = ["id", "Descripcion", "Privilegio"]
-    return getRowById("Acciones",columns, id)
+    fields = []
+    return getDocumentById("Acciones",fields, id)
 
 
-#--------------------------------------------------
-#---------------- Acciones Tomadas ----------------
+@app.route("/action/<id>", methods=["PUT"])
+def updateAction(id):
+    return updateDocument("Acciones", id)
 
 
-@app.route("/actionsTaken", methods=["GET"])
-def getActionsTaken():
-    columns = ["id", "Usuario", "Accion", "Fecha", "Descripcion"]
-    return getRows("AccionesTomadas", columns)
-
-
-@app.route("/actionTaken/<id>", methods=["GET"])
-def getActionTakenById(id):
-    columns = ["id", "Usuario", "Accion", "Fecha", "Descripcion"]
-    return getRowById("AccionesTomadas",columns, id)
-
-
-@app.route("/actionTaken", methods=["POST"])
-def setActionTaken():
-    return setRow("AccionesTomadas")
-
-
-#---------------------------------------------
-#---------------- Inventarios ----------------
+# #---------------------------------------------
+# #---------------- Inventarios ----------------
 
 
 @app.route("/inventories", methods=["GET"])
 def getInventories():
-    columns = ["id", "Fecha"]
-    return getRows("Inventarios", columns)
+    fields = []
+    return getDocuments("Inventarios", fields)
 
 
 @app.route("/inventory/<id>", methods=["GET"])
 def getInventoryById(id):
-    columns = ["id", "Fecha"]
-    return getRowById("Inventarios",columns, id)
+    fields = []
+    return getDocumentById("Inventarios",fields, id)
 
 
 @app.route("/inventory", methods=["POST"])
 def setInventory():
-    return setRow("Inventarios")
+    return setDocument("Inventarios")
 
 
 @app.route("/inventory/<id>", methods=["PUT"])
 def updateInventory(id):
-    return updateRow("Inventarios", id)
+    return updateDocument("Inventarios", id)
 
 
-#-------------------------------------------------------
-#---------------- Insumos Inventariados ----------------
+#------------------------------------------
+#----------------- Compras ----------------
+@app.route("/purchases", methods=["GET"])
+def getPurchases():
+    fields = []
+    return getDocuments("Compras", fields)
 
 
-@app.route("/inventoriedSupplies", methods=["GET"])
-def getInventoriedSupplies():
-    columns = ["id", "Inventario", "Insumo", "CantidadCalculada", "CantidadIngresada"]
-    return getRows("InsumosInventariados", columns)
+@app.route("/purchase/<id>", methods=["GET"])
+def getPurchaseById(id):
+    fields = []
+    return getDocumentById("Compras", fields, id)
 
 
-@app.route("/inventoriedSupplie/<id>", methods=["GET"])
-def getInventoriedSupplieById(id):
-    columns = ["id", "Inventario", "Insumo", "CantidadCalculada", "CantidadIngresada"]
-    return getRowById("InsumosInventariados",columns, id)
+@app.route("/purchase", methods=["POST"])
+def setPurchase():
+    return setDocument("Compras")
 
 
-@app.route("/inventoriedSupplie", methods=["POST"])
-def setInventoriedSupplie():
-    return setRow("InsumosInventariados")
+@app.route("/purchase/<id>", methods=["PUT"])
+def updatePurchase(id):
+    return updateDocument("Compras", id)
 
 
-@app.route("/inventoriedSupplie/<id>", methods=["PUT"])
-def updateInventoriedSupplie(id):
-    return updateRow("InsumosInventariados", id)
+@app.route("/purchase/<id>", methods=["DELETE"])
+def deletPurchase(id):
+    return deleteDocument("Compras", id)
 
 
+#------------------------------------------
+#----------------- Mermas -----------------
+@app.route("/losses", methods=["GET"])
+def getLosses():
+    fields = []
+    return getDocuments("Mermas", fields)
+
+
+@app.route("/losse/<id>", methods=["GET"])
+def getLosseById(id):
+    fields = []
+    return getDocumentById("Mermas", fields, id)
+
+
+@app.route("/losse", methods=["POST"])
+def setLosse():
+    return setDocument("Mermas")
+
+
+@app.route("/losse/<id>", methods=["PUT"])
+def updateLosse(id):
+    return updateDocument("Mermas", id)
+
+
+@app.route("/losse/<id>", methods=["DELETE"])
+def deletLosse(id):
+    return deleteDocument("Mermas", id)
+
+
+#------------------------------------------
+#------------ Motivos de Merma ------------
+@app.route("/losses_cause", methods=["GET"])
+def getLossesCause():
+    fields = []
+    return getDocuments("MotivosDeMerma", fields)
+
+
+@app.route("/losse_cause/<id>", methods=["GET"])
+def getLosseCauseById(id):
+    fields = []
+    return getDocumentById("MotivosDeMerma", fields, id)
+
+
+@app.route("/losse_cause", methods=["POST"])
+def setLosseCause():
+    return setDocument("MotivosDeMerma")
+
+
+@app.route("/losse_cause/<id>", methods=["PUT"])
+def updateLosseCause(id):
+    return updateDocument("MotivosDeMerma", id)
+
+
+@app.route("/losse_cause/<id>", methods=["DELETE"])
+def deletLosseCause(id):
+    return deleteDocument("MotivosDeMerma", id)
 
 
 

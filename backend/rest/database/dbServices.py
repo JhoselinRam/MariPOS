@@ -1,79 +1,106 @@
-import sqlite3 as sql
+from pymongo import MongoClient
 
-def getRows(name, table, columns = []):
-    connection = sql.connect(name)
-    connection.execute("PRAGMA foreign_keys = 1")
-    cursor = connection.cursor()
+def getDocuments(name, collection, fields = []):
+    client = MongoClient("localhost")
+    db     = client[name]
 
-    query = f"SELECT {'*' if len(columns)==0 else ', '.join(columns)} FROM {table};"
-    cursor.execute(query)
-    columNames = [description[0] for description in cursor.description]
-    data = cursor.fetchall()
-    rows = [{columnName:columnValue for columnName, columnValue in zip(columNames, row)} for row in data]
+    documentCursor = db[collection].find() if len(fields)==0 else db[collection].find({},{field:1 for field in fields})
+    documents = list(documentCursor)
+
+    client.close()
+
+    return documents
+
+
+def getDocumentBy(name, collection, identifier, fields = []):
+    client = MongoClient("localhost")
+    db     = client[name]
+
+    if len(identifier) == 2:
+        identifier.append("$eq")
+    elif identifier[2] == "=":
+        identifier[2] = "$eq"
+    elif identifier[2] == "!=":
+        identifier[2] = "$ne"
+    elif identifier[2] == "<":
+        identifier[2] = "$lt"
+    elif identifier[2] == ">":
+        identifier[2] = "$gt"
+    elif identifier[2] == "<=":
+        identifier[2] = "$lte"
+    elif identifier[2] == ">=":
+        identifier[2] = "$gte"
     
-    connection.commit()
-    connection.close()
-
-    return rows
-
-
-def getRowBy(name, table, identifier, columns = []):
-    connection = sql.connect(name)
-    connection.execute("PRAGMA foreign_keys = 1")
-    cursor = connection.cursor()
-
-    query = f"SELECT {'*' if len(columns)==0 else ', '.join(columns)} FROM {table}\
-                     WHERE {identifier[0]}{'=' if len(identifier)<3 else identifier[2]}{identifier[1]};"
-    cursor.execute(query)
-    columNames = [description[0] for description in cursor.description]
-    data = cursor.fetchall()
-    rows = [{columnName:columnValue for columnName, columnValue in zip(columNames, row)} for row in data]
+    query = {identifier[0] : {identifier[2] : identifier[1]}}
     
-    connection.commit()
-    connection.close()
-
-    return rows
-
-
-def setNewRow(name, table, entries):
-    connection = sql.connect(name)
-    connection.execute("PRAGMA foreign_keys = 1")
-    cursor = connection.cursor()
-
-    for entry in entries:
-        columnNames = list(entry.keys())
-        data = tuple(entry.values())
-        query =  f"INSERT INTO {table} ({', '.join(columnNames)}) \
-                VALUES ({','.join(['?' for column in columnNames])})"
-        cursor.execute(query, data)
-
-    connection.commit()
-    connection.close()
-
-
-def updateRow(name, table, identifiers, entries):
-    connection = sql.connect(name)
-    connection.execute("PRAGMA foreign_keys = 1")
-    cursor = connection.cursor()
-
-    for entry, identifier in zip(entries, identifiers):
-        columnNames = list(entry.keys())
-        data = tuple(entry.values())
-        query =  f"UPDATE {table} SET {', '.join([f'{column} = ?' for column in columnNames])} WHERE {identifier[0]}{'=' if len(identifier)<3 else identifier[2]}{identifier[1]};"
-        cursor.execute(query, data)
+    documentCursor = db[collection].find(query) if len(fields)==0 else db[collection].find(query,{field:1 for field in fields})
+    documents = list(documentCursor)
     
-    connection.commit()
-    connection.close()
+    client.close()
+
+    return documents
 
 
-def deleteRow(name,table,identifiers):
-    connection = sql.connect(name)
-    connection.execute("PRAGMA foreign_keys = 1")
-    cursor = connection.cursor()
+def setNewDocument(name, collection, documents):
+    client = MongoClient("localhost")
+    db     = client[name]
+
+    for document in documents:
+        db[collection].insert_one(document)
+
+    client.close()
+
+
+def updateDocument(name, collection, identifiers, documents):
+    client = MongoClient("localhost")
+    db     = client[name]
 
     for identifier in identifiers:
-        query = f"DELETE FROM {table} WHERE {identifier[0]}{'=' if len(identifier)<3 else identifier[2]}{identifier[1]};"
-        cursor.execute(query)
+        if len(identifier) == 2:
+            identifier.append("$eq")
+        elif identifier[2] == "=":
+            identifier[2] = "$eq"
+        elif identifier[2] == "!=":
+            identifier[2] = "$ne"
+        elif identifier[2] == "<":
+            identifier[2] = "$lt"
+        elif identifier[2] == ">":
+            identifier[2] = "$gt"
+        elif identifier[2] == "<=":
+            identifier[2] = "$lte"
+        elif identifier[2] == ">=":
+            identifier[2] = "$gte"
 
-    connection.commit()
-    connection.close()
+    queryes = [{identifier[0] : {identifier[2] : identifier[1]}} for identifier in identifiers]
+
+    for query, document in zip(queryes, documents):
+        db[collection].update_one(query,{"$set":document})
+    
+    client.close()
+
+
+def deleteDocument(name,collection,identifiers):
+    client = MongoClient("localhost")
+    db     = client[name]
+
+    for identifier in identifiers:
+        if len(identifier) == 2:
+            identifier.append("$eq")
+        elif identifier[2] == "=":
+            identifier[2] = "$eq"
+        elif identifier[2] == "!=":
+            identifier[2] = "$ne"
+        elif identifier[2] == "<":
+            identifier[2] = "$lt"
+        elif identifier[2] == ">":
+            identifier[2] = "$gt"
+        elif identifier[2] == "<=":
+            identifier[2] = "$lte"
+        elif identifier[2] == ">=":
+            identifier[2] = "$gte"
+    
+    queryes = [{identifier[0] : {identifier[2] : identifier[1]}} for identifier in identifiers]
+    for query in queryes:
+        db[collection].delete_one(query)
+
+    client.close()
