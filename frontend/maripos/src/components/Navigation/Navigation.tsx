@@ -1,6 +1,7 @@
 import React from 'react';
 import logo from '../../assets/MariPos_logo.png';
 import settings_icon from '../../assets/settings_icon.png';
+import SettingsPanel from '../SettingsPanel/SettingsPanel';
 
 function Navigation(){
     return (
@@ -22,36 +23,7 @@ function Navigation(){
           </div>
         </nav>
 
-        <div className='offcanvas offcanvas-end' id="settingsPanel">
-          <div className='offcanvas-header'>
-            <h1 className='offcanvas-title'>Configuración</h1>
-            <button type='button' className='btn-close text-reset' data-bs-dismiss="offcanvas"></button>
-          </div>
-          <div className='offcanvas-body'>
-            <p>cosa 1</p>
-            <p>cosa 2</p>
-            <p>cosa 3</p>
-            <p>cosa 1</p>
-            <p>cosa 2</p>
-            <p>cosa 3</p>
-            <p>cosa 1</p>
-            <p>cosa 2</p>
-            <p>cosa 3</p>
-            <p>cosa 1</p>
-            <p>cosa 2</p>
-            <p>cosa 3</p>
-            <p>cosa 1</p>
-            <p>cosa 2</p>
-            <p>cosa 3</p>
-            <p>cosa 1</p>
-            <p>cosa 2</p>
-            <p>cosa 3</p>
-            <p>cosa 1</p>
-            <p>cosa 2</p>
-            <p>cosa 3</p>
-
-          </div>
-        </div>
+        <SettingsPanel/>
 
       </>
     );

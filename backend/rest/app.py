@@ -2,13 +2,11 @@ import json
 from bson.json_util import dumps, loads
 from flask import Flask, request, jsonify
 from flask_bcrypt import Bcrypt
-from flask_cors import CORS
 from database import dbServices
 from bson.objectid import ObjectId
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
-#CORS(app)
 dbName = "marison"
 
 #---------------- Generics ----------------

@@ -30,5 +30,6 @@ Open a terminal in the \frontend\maripos folder and run
 *NOTE:* To run this command `Node.js` and `React` must be already installed. 
 Vist ([https://nodejs.org/es/](https://nodejs.org/es/)) to install `Node.js` and then run the command
 >- `npm install -g create-react-app`
-
 _____
+
+MongoDB is used as database, for this proyect to work mongodb must be running or be insatalled as a service in your system
