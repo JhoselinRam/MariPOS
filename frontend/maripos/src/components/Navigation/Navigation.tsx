@@ -6,7 +6,7 @@ import SettingsPanel from '../SettingsPanel/SettingsPanel';
 function Navigation(){
     return (
       <>
-        <nav className='navbar p-0 navbar-expand-sm navbar-dark bg-dark justify-content-between'>
+        <nav className='navbar p-0 navbar-expand-sm navbar-dark bg-primary justify-content-between'>
         
           <span className='nav-brand ms-2'>
             <img src={logo} alt="MariPOS" />

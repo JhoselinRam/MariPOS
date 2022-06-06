@@ -13,22 +13,22 @@ function Toolbar(){
                         </div>
                         <div className='col-sm p-0'>
                             <div className='d-grid'>
-                                <button className='btn btn-light btn-sm' type='button'>Juntar Cuentas</button>
+                                <button className='btn  btn-outline-primary btn-sm' type='button'>Juntar Cuentas</button>
                             </div>
                         </div>
                         <div className='col-sm p-0'>
                             <div className='d-grid'>
-                                <button className='btn btn-light btn-sm' type='button'>Dividir Cuenta</button>
+                                <button className='btn btn-outline-primary btn-sm' type='button'>Dividir Cuenta</button>
                             </div>
                         </div>
                         <div className='col-sm p-0'>
                             <div className='d-grid'>
-                                <button className='btn btn-light btn-sm' type='button'>Cliente</button>
+                                <button className='btn btn-outline-primary btn-sm' type='button'>Cliente</button>
                             </div>
                         </div>
                         <div className='col-sm p-0'>
                             <div className='d-grid'>
-                                <button className='btn btn-light btn-sm' type='button'>Cobrar</button>
+                                <button className='btn btn-outline-primary btn-sm' type='button'>Cobrar</button>
                             </div>
                         </div>
                     </div>
@@ -41,18 +41,18 @@ function Toolbar(){
                         </div>
                         <div className='col-sm p-0'>
                             <div className='d-grid'>
-                                <button className='btn btn-light btn-sm' type='button'>Traspasar Productos</button>
+                                <button className='btn btn-outline-primary btn-sm' type='button'>Traspasar Productos</button>
                             </div>
                         </div>
                         <div className='col-sm p-0'>
                             <div className='d-grid'>
-                                <button className='btn btn-light btn-sm' type='button'>Descuento</button>
+                                <button className='btn btn-outline-primary btn-sm' type='button'>Descuento</button>
                             </div>
                         </div>
                         <div className='col-sm p-0'>
                                 <div className="dropdown">
                                     <div className='d-grid'>
-                                        <button type="button" className="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                                        <button type="button" className="btn btn-outline-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
                                             Invitado
                                         </button>
                                         <div className="dropdown-menu dropdown-menu-end">
@@ -65,7 +65,7 @@ function Toolbar(){
                         </div>
                         <div className='col-sm p-0'>
                             <div className='d-grid'>
-                                <button className='btn btn-light btn-sm' type='button'>Capturar</button>
+                                <button className='btn btn-outline-primary btn-sm' type='button'>Capturar</button>
                             </div>
                         </div>
                     </div>

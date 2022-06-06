@@ -213,16 +213,20 @@ def createCollection_Privilegios(db, collectionName):
 
     collection.insert_many([
         {
-            "Descripcion" : "Inactivo"
+            "Descripcion" : "Inactivo",
+            "Permiso" : 0
         },
         {
-            "Descripcion" : "Cajero"
+            "Descripcion" : "Cajero",
+            "Permiso" : 1
         },
         {
-            "Descripcion" : "Gerente"
+            "Descripcion" : "Gerente",
+            "Permiso" : 2 
         },
         {
-            "Descripcion" : "Administrador"
+            "Descripcion" : "Administrador",
+            "Permiso" : 3
         }
     ])
 
@@ -245,12 +249,12 @@ def createCollection_Usuarios(db, collectionName):
         {
             "Nombre" : "Usuario Eliminado",
             "Privilegio" : inactiveId,
-            "Constraseña" : bcrypt.generate_password_hash("0000").decode("utf-8")
+            "Contraseña" : bcrypt.generate_password_hash("0000").decode("utf-8")
         },
         {
             "Nombre" : "Admin",
             "Privilegio" : adminId,
-            "Constraseña" : bcrypt.generate_password_hash("1234").decode("utf-8")
+            "Contraseña" : bcrypt.generate_password_hash("1234").decode("utf-8")
         }
     ])
 

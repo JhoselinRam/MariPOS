@@ -4,7 +4,11 @@ def getDocuments(name, collection, fields = []):
     client = MongoClient("localhost")
     db     = client[name]
 
-    documentCursor = db[collection].find() if len(fields)==0 else db[collection].find({},{field:1 for field in fields})
+    showFiels = {field:1 for field in fields}
+    if "_id" not in fields:
+        showFiels["_id"] = 0
+
+    documentCursor = db[collection].find() if len(fields)==0 else db[collection].find({},showFiels)
     documents = list(documentCursor)
 
     client.close()
@@ -32,8 +36,11 @@ def getDocumentBy(name, collection, identifier, fields = []):
         identifier[2] = "$gte"
     
     query = {identifier[0] : {identifier[2] : identifier[1]}}
+    showFiels = {field:1 for field in fields}
+    if "_id" not in fields:
+        showFiels["_id"] = 0
     
-    documentCursor = db[collection].find(query) if len(fields)==0 else db[collection].find(query,{field:1 for field in fields})
+    documentCursor = db[collection].find(query) if len(fields)==0 else db[collection].find(query,showFiels)
     documents = list(documentCursor)
     
     client.close()

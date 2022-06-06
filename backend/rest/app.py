@@ -4,10 +4,12 @@ from flask import Flask, request, jsonify
 from flask_bcrypt import Bcrypt
 from database import dbServices
 from bson.objectid import ObjectId
+from flask_cors import CORS
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 dbName = "marison"
+CORS(app)
 
 #---------------- Generics ----------------
 def getDocuments(collection, fields):
@@ -473,6 +475,34 @@ def updateLosseCause(id):
 def deletLosseCause(id):
     return deleteDocument("MotivosDeMerma", id)
 
+
+#------------------------------------------
+#--------------- Especiales ---------------
+@app.route("/check_permission", methods=["POST"])
+def checkPermission():
+    data = request.json
+
+    users = dbServices.getDocuments(dbName,"Usuarios", ["Privilegio", "Contraseña"])
+    action = dbServices.getDocumentBy(dbName, "Acciones", ["_id",ObjectId(data["action"])], ["Privilegio"])
+    
+    if len(action) == 0:
+        return jsonify({"status":404, "message":"Accion no encontrada"})
+    
+    foundUser = {}
+    for user in users:
+        if bcrypt.check_password_hash(user["Contraseña"], data["password"]):
+            foundUser = user
+
+    if len(foundUser) == 0:
+        return jsonify({"status":404, "message":"Usuario no encontrado"})
+    
+    userPermission = dbServices.getDocumentBy(dbName,"Privilegios", ["_id",foundUser["Privilegio"]], ["Permiso"])[0]["Permiso"]
+    actionPermission = dbServices.getDocumentBy(dbName,"Privilegios", ["_id",action[0]["Privilegio"]], ["Permiso"])[0]["Permiso"]
+    
+    if userPermission < actionPermission:
+        return jsonify({"status":403, "message":"No cuentas con los privilegios para realizar esta acción"})
+    
+    return jsonify({"status":200, "message":"Acción permitida"})
 
 
 

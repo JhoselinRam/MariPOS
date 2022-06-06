@@ -1,23 +1,73 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import NewSuplier from "./NewSuplier";
+import {SupliersList} from "../../../../interfaces/interfaces";
 
 function SettingsOption_Supliers(){
+    const [list, setList] = useState<SupliersList[]>([]);
+
+    async function getSupliersList() {
+        let supliersResponse = await fetch(`${process.env.REACT_APP_BACKEND}/providers`,{method:'GET'});
+        let supliersList = await supliersResponse.json();
+        setList(supliersList);
+    }
+
+    useEffect(()=>{
+        let supliersModal = document.getElementById('SupliersModal');
+        supliersModal?.addEventListener('show.bs.modal', getSupliersList);
+    }, []);
+
+
+
     return (
-        <div className="modal fade" id="SupliersPanel" data-bs-keyboard='false'>
-            <div className="modal-dialog">
-                <div className="modal-content">
-                    <div className="modal-header">
-                        <h5 className="modal-title">Proveedores</h5>
-                    </div>
-                    <div className="modal-body">
-                        cositas
-                    </div>
-                    <div className="modal-footer">
-                        <button type="button" className="btn btn-secondary" data-bs-dismiss='modal'>Cancelar</button>
-                        <button type="button" className="btn btn-primary">Aceptar</button>
+        <>
+            <div id="SupliersPanel">
+                <button data-bs-toggle='modal' data-bs-target='#SupliersModal' style={{display:"none"}}></button>
+                <div className="modal fade" id="SupliersModal" data-bs-backdrop="static" data-bs-keyboard='false'>
+                    <div className="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Proveedores</h5>
+                                <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div className="modal-body">
+                                <div className="container-fluid">
+                                    <table className="table table-striped table-responsive table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Nombre</th>
+                                                <th>RFC</th>
+                                                <th>id</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {list.map((item)=>{
+                                                return (
+                                                    <tr key={item["_id"]['$oid']}>
+                                                        <td>{item["Descripcion"]}</td>
+                                                        <td>{item["RFC"]}</td>
+                                                        <td>{item["_id"]["$oid"]}</td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div className="modal-footer">
+                                <div className="btn-group" role="group">
+                                    <button type="button" className="btn btn-outline-danger">Eliminar</button>     
+                                    <button type="button" className="btn btn-outline-info">Editar</button>
+                                    <button type="button" className="btn btn-outline-primary" data-bs-target="#NewSuplierPanel" data-bs-toggle="modal">Nuevo</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </div> 
+
+            <NewSuplier list={list}/>
+        </>
+        
     );
 }
 
