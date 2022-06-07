@@ -47,7 +47,7 @@ function SubmitPassword({action, onSuccess, onFailure, onClose, parent}:SubmitPa
 
     return (
         <>
-             <button data-bs-toggle='modal' id="submitPasswordToggler" data-bs-target='#PasswordModal' style={{display:"none"}}></button>
+             <button data-bs-toggle='modal' className="submitPasswordToggler" data-bs-target='#PasswordModal' style={{display:"none"}}></button>
              <div className="modal fade" id="PasswordModal" data-bs-backdrop="static" data-bs-keyboard="false">
                 <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">

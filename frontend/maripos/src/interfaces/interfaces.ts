@@ -16,3 +16,9 @@ export interface SubmitPasswordResponse{
     status:number,
     message:string
 }
+
+export interface SuplierItemsProps{
+    item:SupliersList, 
+    onSelect:(arg0:string)=>void, 
+    selected:string
+}

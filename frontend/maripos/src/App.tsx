@@ -1,7 +1,7 @@
 import React from 'react';
 import Navigation from './components/Navigation/Navigation';
 import MainSaleWindow from './components/MainSaleWindow/MainSaleWindow';
-import SettingsOption_Supliers from './components/SettingsPanel/SettingsCategories/SettingsOptions/SettingsOption_Supliers';
+import SettingsOption_Supliers from './components/SettingsPanel/SettingsCategories/Products/Options/Supliers/SettingsOption_Supliers';
 
 function App() {
   return (

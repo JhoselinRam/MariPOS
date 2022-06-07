@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from "react";
 import NewSuplier from "./NewSuplier";
-import {SupliersList} from "../../../../interfaces/interfaces";
+import EditSuplier from "./EditSuplier";
+import {SupliersList} from "../../../../../../interfaces/interfaces";
+import SuplierListItem from "./SuplierListItem";
 
 function SettingsOption_Supliers(){
     const [list, setList] = useState<SupliersList[]>([]);
+    const [itemSelected, setItemSelected] = useState("");
 
     async function getSupliersList() {
         let supliersResponse = await fetch(`${process.env.REACT_APP_BACKEND}/providers`,{method:'GET'});
         let supliersList = await supliersResponse.json();
+        supliersList = supliersList.filter((item:SupliersList)=>item["Descripcion"] !== "Proveedor Eliminado");
         setList(supliersList);
+        setItemSelected("");
     }
 
     useEffect(()=>{
@@ -16,7 +21,9 @@ function SettingsOption_Supliers(){
         supliersModal?.addEventListener('show.bs.modal', getSupliersList);
     }, []);
 
-
+    function selectItem(selected:string){
+        setItemSelected(selected);
+    }
 
     return (
         <>
@@ -36,17 +43,12 @@ function SettingsOption_Supliers(){
                                             <tr>
                                                 <th>Nombre</th>
                                                 <th>RFC</th>
-                                                <th>id</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {list.map((item)=>{
                                                 return (
-                                                    <tr key={item["_id"]['$oid']}>
-                                                        <td>{item["Descripcion"]}</td>
-                                                        <td>{item["RFC"]}</td>
-                                                        <td>{item["_id"]["$oid"]}</td>
-                                                    </tr>
+                                                    <SuplierListItem item={item} onSelect={selectItem} selected={itemSelected}/>
                                                 );
                                             })}
                                         </tbody>
@@ -56,7 +58,7 @@ function SettingsOption_Supliers(){
                             <div className="modal-footer">
                                 <div className="btn-group" role="group">
                                     <button type="button" className="btn btn-outline-danger">Eliminar</button>     
-                                    <button type="button" className="btn btn-outline-info">Editar</button>
+                                    <button type="button" className={`btn btn-outline-info ${itemSelected===""?"Disabled":""}`} data-bs-toggle="modal" data-bs-target="EditSuplierPanel">Editar</button>
                                     <button type="button" className="btn btn-outline-primary" data-bs-target="#NewSuplierPanel" data-bs-toggle="modal">Nuevo</button>
                                 </div>
                             </div>
@@ -66,6 +68,7 @@ function SettingsOption_Supliers(){
             </div> 
 
             <NewSuplier list={list}/>
+            <EditSuplier list={list} idItem={itemSelected}/>
         </>
         
     );

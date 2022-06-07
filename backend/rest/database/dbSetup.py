@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 import time
 from flask_bcrypt import Bcrypt
+from bson.objectid import ObjectId
 
 
 def main():
@@ -275,176 +276,211 @@ def createCollection_Acciones(db, collectionName):
 
     collection.insert_many([
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8a6"),
             "Descripcion" : "Cancelacion",
             "Privilegio" : managerId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8a7"),
             "Descripcion" : "Restauracion",
             "Privilegio" : managerId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8a8"),
             "Descripcion" : "Apertura de turno",
             "Privilegio" : cashierId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8a9"),
             "Descripcion" : "Cierre de turno",
             "Privilegio" : managerId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8aa"),
             "Descripcion" : "Descuento",
             "Privilegio" : cashierId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8ab"),
             "Descripcion" : "Añadir insumo",
             "Privilegio" : adminId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8ac"),
             "Descripcion" : "Modificar insumo",
             "Privilegio" : adminId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8ad"),
             "Descripcion" : "Eliminar insumo",
             "Privilegio" : adminId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8ae"),
             "Descripcion" : "Añadir producto",
             "Privilegio" : adminId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8af"),
             "Descripcion" : "Modificar producto",
             "Privilegio" : adminId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8b0"),
             "Descripcion" : "Eliminar producto",
             "Privilegio" : adminId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8b1"),
             "Descripcion" : "Añadir proveedor",
             "Privilegio" : adminId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8b2"),
             "Descripcion" : "Modificar proveedor",
             "Privilegio" : adminId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8b3"),
             "Descripcion" : "Eliminar proveedor",
             "Privilegio" : adminId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8b4"),
             "Descripcion" : "Añadir grupo",
             "Privilegio" : adminId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8b5"),
             "Descripcion" : "Modificar grupo",
             "Privilegio" : adminId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8b6"),
             "Descripcion" : "Eliminar grupo",
             "Privilegio" : adminId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8b7"),
             "Descripcion" : "Añadir subgrupo",
             "Privilegio" : adminId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8b8"),
             "Descripcion" : "Modificar subgrupo",
             "Privilegio" : adminId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8b9"),
             "Descripcion" : "Eliminar subgrupo",
             "Privilegio" : adminId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8ba"),
             "Descripcion" : "Añadir cliente",
             "Privilegio" : cashierId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8bb"),
             "Descripcion" : "Modificar cliente",
             "Privilegio" : managerId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8bc"),
             "Descripcion" : "Eliminar cliente",
             "Privilegio" : managerId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8bd"),
             "Descripcion" : "Añadir usuario",
             "Privilegio" : adminId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8be"),
             "Descripcion" : "Modificar usuario",
             "Privilegio" : adminId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8bf"),
             "Descripcion" : "Eliminar usuario",
             "Privilegio" : adminId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8c0"),
             "Descripcion" : "Ingresar inventario",
             "Privilegio" : managerId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8c1"),
             "Descripcion" : "Modificar inventario",
             "Privilegio" : adminId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8c2"),
             "Descripcion" : "Generar reporte",
             "Privilegio" : managerId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8c3"),
             "Descripcion" : "Ingresar compra",
             "Privilegio" : managerId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8c4"),
             "Descripcion" : "Modificar compra",
             "Privilegio" : adminId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8c5"),
             "Descripcion" : "Eliminar compra",
             "Privilegio" : adminId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8c6"),
             "Descripcion" : "Ingresar merma",
             "Privilegio" : managerId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8c7"),
             "Descripcion" : "Modificar merma",
             "Privilegio" : adminId,
             "Historial" : []
         },
         {
+            "_id" : ObjectId("6286fe2a567ac6bb216ff8c8"),
             "Descripcion" : "Eliminar merma",
             "Privilegio" : adminId,
             "Historial" : []

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect } from 'react';
-import SettingsCategorie_Products from './SettingsCategories/SettingsCategorie_Products';
-import SettingsCategorie_Reports from './SettingsCategories/SettingsCategories_Reports';
+import SettingsCategorie_Products from './SettingsCategories/Products/SettingsCategorie_Products';
+import SettingsCategorie_Reports from './SettingsCategories/Reports/SettingsCategories_Reports';
 
 function SettingsPanel(){
     
