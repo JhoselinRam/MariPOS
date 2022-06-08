@@ -133,7 +133,7 @@ function EditSuplier({list, idItem}:newSuplierProps){
                 </div>
             </div>
 
-            <SubmitPassword action={`${process.env.REACT_APP_ACTIONS_MODIFY_SUPLIER}`} onSuccess={submitSuccessful} onFailure={submitFailure} onClose={paswordClose} parent="#EditSuplierPanel"/>
+            
         </>        
     );
 }

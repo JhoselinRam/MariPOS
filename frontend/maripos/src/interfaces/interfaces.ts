@@ -9,7 +9,8 @@ export interface SubmitPasswordProps{
     onSuccess: (arg0: SubmitPasswordResponse)=>void,
     onFailure: (arg0: SubmitPasswordResponse)=>void,
     onClose: ()=>void,
-    parent?:string
+    parent?:string,
+    passId:(arg0:{"toggler":string, "dismiss":string})=>void
 }
 
 export interface SubmitPasswordResponse{

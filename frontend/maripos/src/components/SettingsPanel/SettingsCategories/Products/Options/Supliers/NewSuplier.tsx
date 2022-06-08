@@ -10,6 +10,7 @@ function NewSuplier({list}:newSuplierProps){
 
     const [validSuplier, setValidSuplier] = useState(false);
     const [validMessage, setValidMessage] = useState("");
+    const [passwordId, setPasswordId] = useState<{"toggler":string, "dismiss":string}>({"toggler":"", "dismiss":""});
 
     useEffect(()=>{
         let panel = document.getElementById("NewSuplierPanel");
@@ -51,7 +52,7 @@ function NewSuplier({list}:newSuplierProps){
     }
 
     function submitSuplier(){
-        let passwordButton = document.getElementsByClassName("submitPasswordToggler")[0] as HTMLButtonElement;
+        let passwordButton = document.getElementById(passwordId["toggler"]) as HTMLButtonElement;
         passwordButton.click();
     }
 
@@ -62,7 +63,7 @@ function NewSuplier({list}:newSuplierProps){
     }
 
     async function submitSuccessful(response:SubmitPasswordResponse){
-        let passwordButton = document.getElementsByClassName("submitPasswordToggler")[0] as HTMLButtonElement;
+        let passwordButton = document.getElementById(passwordId["toggler"]) as HTMLButtonElement;
         let newNameInput = document.getElementById("NewSuplierField") as HTMLInputElement
         let newRFCinput = document.getElementById("NewRFCField") as HTMLInputElement
         let newSuplierObject = [{"Descripcion":newNameInput.value,
@@ -84,8 +85,12 @@ function NewSuplier({list}:newSuplierProps){
     }
 
     function paswordClose(){
-        let passwordClose = document.getElementById("PasswordDismiss") as HTMLButtonElement;
+        let passwordClose = document.getElementById(passwordId["dismiss"]) as HTMLButtonElement;
         passwordClose.click();
+    }
+
+    function getPasswordId(id:{"toggler":string, "dismiss":string}){
+        setPasswordId(id);
     }
 
     return (
@@ -128,7 +133,7 @@ function NewSuplier({list}:newSuplierProps){
                 </div>
             </div>
 
-            <SubmitPassword action={`${process.env.REACT_APP_ACTIONS_NEW_SUPLIER}`} onSuccess={submitSuccessful} onFailure={submitFailure} onClose={paswordClose} parent="#NewSuplierPanel"/>
+            <SubmitPassword action={`${process.env.REACT_APP_ACTIONS_NEW_SUPLIER}`} onSuccess={submitSuccessful} onFailure={submitFailure} onClose={paswordClose} parent="#NewSuplierPanel" passId={getPasswordId} />
         </>        
     );
 }

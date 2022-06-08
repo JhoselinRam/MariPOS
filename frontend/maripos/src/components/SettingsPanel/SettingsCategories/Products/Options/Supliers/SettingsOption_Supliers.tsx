@@ -68,7 +68,6 @@ function SettingsOption_Supliers(){
             </div> 
 
             <NewSuplier list={list}/>
-            <EditSuplier list={list} idItem={itemSelected}/>
         </>
         
     );
