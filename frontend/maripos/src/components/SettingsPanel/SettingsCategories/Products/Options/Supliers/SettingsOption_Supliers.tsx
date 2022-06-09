@@ -7,13 +7,17 @@ function SettingsOption_Supliers(){
     const [list, setList] = useState<SupliersList[]>([]);
     const [itemSelected, setItemSelected] = useState("");
     const [passwordId, setPasswordId] = useState({"toggler":"", "dismiss":""});
+    const [action, setAction] = useState("");
 
 
     async function getSupliersList() {
         let supliersResponse = await fetch(`${process.env.REACT_APP_BACKEND}/providers`,{method:'GET'});
-        let supliersList = await supliersResponse.json();
+        let supliersList:SupliersList[] = await supliersResponse.json();
         supliersList = supliersList.filter((item:SupliersList)=>item["Descripcion"] !== "Proveedor Eliminado");
-        supliersList = supliersList.map((item:SupliersList)=>item["set"]=true);
+        supliersList = supliersList.map((item:SupliersList)=>{
+            item["set"] = true;
+            return item;
+        });
         setList(supliersList);
         setItemSelected("");
     }
@@ -28,12 +32,11 @@ function SettingsOption_Supliers(){
     }
 
     function insertUser(){
-        let newUser:SupliersList = {"Descripcion":"", "RFC":"", "_id":{"$oid":""},"set":false};
-        console.log(list);
+        let newUser:SupliersList = {"Descripcion":"", "RFC":"", "_id":{"$oid":"new"},"set":false};
         setList((prevState)=>[...prevState, newUser]);
+        setAction(`${process.env.REACT_APP_ACTIONS_NEW_SUPLIER}`);
     }
 
-    useEffect(()=>console.log(list),[list]);
 
 
 
@@ -90,10 +93,11 @@ function SettingsOption_Supliers(){
                                 </div>
                             </div>
                             <div className="modal-footer">
+                                <button type="button" className={`btn btn-outline-danger me-auto ${action===""?"disabled":""}`}>Cancelar</button>
                                 <div className="btn-group" role="group">
                                     <button type="button" className={`btn btn-outline-danger ${itemSelected===""?"disabled":""}`} onClick={deleteUser}>Eliminar</button>     
                                     <button type="button" className={`btn btn-outline-info ${itemSelected===""?"disabled":""}`}>Editar</button>
-                                    <button type="button" className="btn btn-outline-primary" onClick={insertUser}>Nuevo</button>
+                                    <button type="button" className="btn btn-outline-primary" onClick={insertUser}>{action===`${process.env.REACT_APP_ACTIONS_NEW_SUPLIER}`?"Aceptar":"Nuevo"}</button>
                                 </div>
                             </div>
                         </div>
@@ -101,7 +105,7 @@ function SettingsOption_Supliers(){
                 </div>
             </div> 
 
-            <SubmitPassword action={`${process.env.REACT_APP_ACTIONS_DELETE_SUPLIER}`} onSuccess={deleteSuccessful} onFailure={deleteFailure} onClose={paswordClose} parent="#SupliersModal" passId={(id)=>setPasswordId(id)}/>
+            <SubmitPassword action={action} onSuccess={deleteSuccessful} onFailure={deleteFailure} onClose={paswordClose} parent="#SupliersModal" passId={(id)=>setPasswordId(id)}/>
         </>
         
     );

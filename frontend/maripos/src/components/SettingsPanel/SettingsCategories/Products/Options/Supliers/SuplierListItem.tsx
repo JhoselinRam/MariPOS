@@ -5,8 +5,8 @@ function SuplierListItem({item, onSelect, selected} : SuplierItemsProps){
 
     return (
         <tr onClick={()=>onSelect(item["_id"]['$oid'])} className={item["_id"]['$oid']===selected?"table-info":""}>
-            <td>{item["Descripcion"]}</td>
-            <td>{item["RFC"]}</td>
+            <td>{item["set"]===true?item["Descripcion"]:<input id="NewSuplierInput" className="form-control" type="text"/>}</td>
+            <td>{item["set"]===true?item["RFC"]:<input id="NewRFCInput" className="form-control" type="text"/>}</td>
         </tr>
     );
 }
