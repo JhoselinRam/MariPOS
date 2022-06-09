@@ -15,7 +15,8 @@ export interface SubmitPasswordProps{
 
 export interface SubmitPasswordResponse{
     status:number,
-    message:string
+    message:string,
+    user:{$oid:string}
 }
 
 export interface SuplierItemsProps{

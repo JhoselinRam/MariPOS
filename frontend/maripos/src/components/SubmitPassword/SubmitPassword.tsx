@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useId } from "react";
-import {SubmitPasswordProps} from "../../interfaces/interfaces"
+import {SubmitPasswordProps, SubmitPasswordResponse} from "../../interfaces/interfaces"
 
 function SubmitPassword({action, onSuccess, onFailure, onClose, parent, passId}:SubmitPasswordProps){
 
@@ -44,9 +44,13 @@ function SubmitPassword({action, onSuccess, onFailure, onClose, parent, passId}:
         let submitRessponse = await fetch(`${process.env.REACT_APP_BACKEND}/check_permission`,{method:'POST',
                                                                                                headers:{'Content-Type':'application/json'},
                                                                                                body:JSON.stringify({action,password})});
-        let response = await submitRessponse.json();
+        let response:SubmitPasswordResponse = await submitRessponse.json();
         
         if(response["status"] === 200){
+            await fetch(`${process.env.REACT_APP_BACKEND}/action`,{method:'PUT',
+                                                                   headers:{'Content-Type':'application/json'},
+                                                                   body:JSON.stringify({"usuario": response["user"]["$oid"],
+                                                                                        "accion":action})});
             onSuccess(response);
         }
         else

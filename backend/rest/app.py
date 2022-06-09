@@ -1,4 +1,5 @@
 import json
+import time
 from bson.json_util import dumps, loads
 from flask import Flask, request, jsonify
 from flask_bcrypt import Bcrypt
@@ -358,9 +359,22 @@ def getActionById(id):
     return getDocumentById("Acciones",fields, id)
 
 
-@app.route("/action/<id>", methods=["PUT"])
-def updateAction(id):
-    return updateDocument("Acciones", id)
+@app.route("/action", methods=["PUT"])
+def updateAction():
+    data = request.json
+    actionDone = dbServices.getDocumentBy(dbName,"Acciones",["_id",ObjectId(data["accion"])],["Historial"])[0]
+
+    
+    newAction = {"Usuario" : ObjectId(data["usuario"])}
+    newAction["Fecha"] = time.time()
+
+    actionDone["Historial"].append(newAction)
+
+    dbServices.updateDocument(dbName,"Acciones",[["_id",ObjectId(data["accion"])]],[actionDone])
+
+
+
+    return jsonify({"status":"success"})
 
 
 # #---------------------------------------------
@@ -482,11 +496,11 @@ def deletLosseCause(id):
 def checkPermission():
     data = request.json
 
-    users = dbServices.getDocuments(dbName,"Usuarios", ["Privilegio", "Contraseña"])
+    users = dbServices.getDocuments(dbName,"Usuarios", ["_id", "Privilegio", "Contraseña"])
     action = dbServices.getDocumentBy(dbName, "Acciones", ["_id",ObjectId(data["action"])], ["Privilegio"])
     
     if len(action) == 0:
-        return jsonify({"status":404, "message":"Accion no encontrada"})
+        return jsonify({"status":404, "message":"Accion no encontrada", "user":"Usuario no encontrado"})
     
     foundUser = {}
     for user in users:
@@ -494,15 +508,16 @@ def checkPermission():
             foundUser = user
 
     if len(foundUser) == 0:
-        return jsonify({"status":404, "message":"Usuario no encontrado"})
+        return jsonify({"status":404, "message":"Usuario no encontrado","user":"Usuario no encontrado"})
     
     userPermission = dbServices.getDocumentBy(dbName,"Privilegios", ["_id",foundUser["Privilegio"]], ["Permiso"])[0]["Permiso"]
     actionPermission = dbServices.getDocumentBy(dbName,"Privilegios", ["_id",action[0]["Privilegio"]], ["Permiso"])[0]["Permiso"]
     
     if userPermission < actionPermission:
-        return jsonify({"status":403, "message":"No cuentas con los privilegios para realizar esta acción"})
+        return jsonify(json.loads(dumps({"status":403, "message":"No cuentas con los privilegios para realizar esta acción", "user":foundUser["_id"]})))
     
-    return jsonify({"status":200, "message":"Acción permitida"})
+    return jsonify(json.loads(dumps({"status":200, "message":"Acción permitida", "user":foundUser["_id"]})))
+
 
 
 
