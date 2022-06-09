@@ -57,6 +57,11 @@ function SubmitPassword({action, onSuccess, onFailure, onClose, parent, passId}:
             onFailure(response);
     }
 
+    function selectOnFocus(){
+        let input = document.getElementById(passwordInput) as HTMLInputElement;
+        input.select();
+    }
+
     return (
         <>
              <button data-bs-toggle='modal' id={passwordToggler} data-bs-target={`#${passwordModal}`} style={{display:"none"}}></button>
@@ -69,7 +74,7 @@ function SubmitPassword({action, onSuccess, onFailure, onClose, parent, passId}:
                         <div className="modal-body">
                            
                                 <label htmlFor={`#${passwordInput}`}>Contraseña</label>
-                                <input type="password" id={passwordInput} className="form-control" autoComplete="off"/>
+                                <input type="password" id={passwordInput} className="form-control" autoComplete="off" onFocus={selectOnFocus}/>
                            
                         </div>
                         <div className="modal-footer">

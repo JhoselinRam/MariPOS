@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import NewSuplier from "./NewSuplier";
-import EditSuplier from "./EditSuplier";
 import {SupliersList, SubmitPasswordResponse} from "../../../../../../interfaces/interfaces";
 import SuplierListItem from "./SuplierListItem";
 import SubmitPassword from "../../../../../SubmitPassword/SubmitPassword";
@@ -15,6 +13,7 @@ function SettingsOption_Supliers(){
         let supliersResponse = await fetch(`${process.env.REACT_APP_BACKEND}/providers`,{method:'GET'});
         let supliersList = await supliersResponse.json();
         supliersList = supliersList.filter((item:SupliersList)=>item["Descripcion"] !== "Proveedor Eliminado");
+        supliersList = supliersList.map((item:SupliersList)=>item["set"]=true);
         setList(supliersList);
         setItemSelected("");
     }
@@ -27,6 +26,17 @@ function SettingsOption_Supliers(){
     function selectItem(selected:string){
         setItemSelected(selected);
     }
+
+    function insertUser(){
+        let newUser:SupliersList = {"Descripcion":"", "RFC":"", "_id":{"$oid":""},"set":false};
+        console.log(list);
+        setList((prevState)=>[...prevState, newUser]);
+    }
+
+    useEffect(()=>console.log(list),[list]);
+
+
+
 
     function deleteUser(){
         let passwordButton = document.getElementById(passwordId["toggler"]) as HTMLButtonElement;
@@ -82,8 +92,8 @@ function SettingsOption_Supliers(){
                             <div className="modal-footer">
                                 <div className="btn-group" role="group">
                                     <button type="button" className={`btn btn-outline-danger ${itemSelected===""?"disabled":""}`} onClick={deleteUser}>Eliminar</button>     
-                                    <button type="button" className={`btn btn-outline-info ${itemSelected===""?"disabled":""}`} data-bs-toggle="modal" data-bs-target="#EditSuplierPanel">Editar</button>
-                                    <button type="button" className="btn btn-outline-primary" data-bs-target="#NewSuplierPanel" data-bs-toggle="modal">Nuevo</button>
+                                    <button type="button" className={`btn btn-outline-info ${itemSelected===""?"disabled":""}`}>Editar</button>
+                                    <button type="button" className="btn btn-outline-primary" onClick={insertUser}>Nuevo</button>
                                 </div>
                             </div>
                         </div>
@@ -91,8 +101,6 @@ function SettingsOption_Supliers(){
                 </div>
             </div> 
 
-            <NewSuplier list={list}/>
-            <EditSuplier list={list} idItem={itemSelected}/>
             <SubmitPassword action={`${process.env.REACT_APP_ACTIONS_DELETE_SUPLIER}`} onSuccess={deleteSuccessful} onFailure={deleteFailure} onClose={paswordClose} parent="#SupliersModal" passId={(id)=>setPasswordId(id)}/>
         </>
         

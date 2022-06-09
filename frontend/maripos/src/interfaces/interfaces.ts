@@ -1,7 +1,8 @@
 export interface SupliersList{
     _id:{$oid:string},
     Descripcion:string,
-    RFC:string
+    RFC:string,
+    set?:boolean
 }
 
 export interface SubmitPasswordProps{
