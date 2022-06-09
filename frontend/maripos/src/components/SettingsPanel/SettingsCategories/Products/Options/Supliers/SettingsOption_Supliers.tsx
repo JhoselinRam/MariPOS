@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import NewSuplier from "./NewSuplier";
 import EditSuplier from "./EditSuplier";
-import {SupliersList} from "../../../../../../interfaces/interfaces";
+import {SupliersList, SubmitPasswordResponse} from "../../../../../../interfaces/interfaces";
 import SuplierListItem from "./SuplierListItem";
+import SubmitPassword from "../../../../../SubmitPassword/SubmitPassword";
 
 function SettingsOption_Supliers(){
     const [list, setList] = useState<SupliersList[]>([]);
     const [itemSelected, setItemSelected] = useState("");
+    const [passwordId, setPasswordId] = useState({"toggler":"", "dismiss":""});
+
 
     async function getSupliersList() {
         let supliersResponse = await fetch(`${process.env.REACT_APP_BACKEND}/providers`,{method:'GET'});
@@ -23,6 +26,27 @@ function SettingsOption_Supliers(){
 
     function selectItem(selected:string){
         setItemSelected(selected);
+    }
+
+    function deleteUser(){
+        let passwordButton = document.getElementById(passwordId["toggler"]) as HTMLButtonElement;
+        passwordButton.click();
+    }
+
+    async function deleteSuccessful(response:SubmitPasswordResponse){
+        let passwordButton = document.getElementById(passwordId["dismiss"]) as HTMLButtonElement;
+        
+        await fetch(`${process.env.REACT_APP_BACKEND}/provider/${itemSelected}`, {method:"DELETE"});
+        passwordButton.click();
+    }
+
+    function deleteFailure(response:SubmitPasswordResponse){
+        alert(`ERROR: ${response["message"]}`);
+    }
+
+    function paswordClose(){
+        let passwordClose = document.getElementById(passwordId["dismiss"]) as HTMLButtonElement;
+        passwordClose.click();
     }
 
     return (
@@ -57,7 +81,7 @@ function SettingsOption_Supliers(){
                             </div>
                             <div className="modal-footer">
                                 <div className="btn-group" role="group">
-                                    <button type="button" className="btn btn-outline-danger">Eliminar</button>     
+                                    <button type="button" className={`btn btn-outline-danger ${itemSelected===""?"disabled":""}`} onClick={deleteUser}>Eliminar</button>     
                                     <button type="button" className={`btn btn-outline-info ${itemSelected===""?"disabled":""}`} data-bs-toggle="modal" data-bs-target="#EditSuplierPanel">Editar</button>
                                     <button type="button" className="btn btn-outline-primary" data-bs-target="#NewSuplierPanel" data-bs-toggle="modal">Nuevo</button>
                                 </div>
@@ -69,6 +93,7 @@ function SettingsOption_Supliers(){
 
             <NewSuplier list={list}/>
             <EditSuplier list={list} idItem={itemSelected}/>
+            <SubmitPassword action={`${process.env.REACT_APP_ACTIONS_DELETE_SUPLIER}`} onSuccess={deleteSuccessful} onFailure={deleteFailure} onClose={paswordClose} parent="#SupliersModal" passId={(id)=>setPasswordId(id)}/>
         </>
         
     );

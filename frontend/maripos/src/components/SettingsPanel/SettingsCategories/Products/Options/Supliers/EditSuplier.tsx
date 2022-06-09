@@ -7,7 +7,7 @@ function EditSuplier({list, idItem}:EditSuplierProps){
 
     const [validSuplier, setValidSuplier] = useState(false);
     const [validMessage, setValidMessage] = useState("");
-    const [passwordId, setPasswordId] = useState<{"toggler":string, "dismiss":string}>({"toggler":"", "dismiss":""});
+    const [passwordId, setPasswordId] = useState({"toggler":"", "dismiss":""});
 
     useEffect(()=>{
         let panel = document.getElementById("EditSuplierPanel");
@@ -102,10 +102,6 @@ function EditSuplier({list, idItem}:EditSuplierProps){
         passwordClose.click();
     }
 
-    function getPasswordId(id:{"toggler":string, "dismiss":string}){
-        setPasswordId(id);
-    }
-
     return (
         <>
             <div className="modal fade" id="EditSuplierPanel" data-bs-backdrop="static" data-bs-keyboard='false'>
@@ -146,7 +142,7 @@ function EditSuplier({list, idItem}:EditSuplierProps){
                 </div>
             </div>
 
-            <SubmitPassword action={`${process.env.REACT_APP_ACTIONS_MODIFY_SUPLIER}`} onSuccess={submitSuccessful} onFailure={submitFailure} onClose={paswordClose} parent="#NewSuplierPanel" passId={getPasswordId} />
+            <SubmitPassword action={`${process.env.REACT_APP_ACTIONS_MODIFY_SUPLIER}`} onSuccess={submitSuccessful} onFailure={submitFailure} onClose={paswordClose} parent="#EditSuplierPanel" passId={(id)=>setPasswordId(id)} />
         </>        
     );
 }
