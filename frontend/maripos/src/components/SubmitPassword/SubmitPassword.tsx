@@ -4,19 +4,19 @@ import {SubmitPasswordProps} from "../../interfaces/interfaces"
 function SubmitPassword({action, onSuccess, onFailure, onClose, parent, passId}:SubmitPasswordProps){
 
     const [keyTyped, setKeyTyped] = useState("");
-    const passwordToggler = useId();
-    const passwordModal = useId();
-    const passwordInput = useId();
-    const passwordDismiss = useId();
+    const passwordToggler = `paswordId${useId()}`.replaceAll(":","-");
+    const passwordModal = `paswordId${useId()}`.replaceAll(":","-");
+    const passwordInput = `paswordId${useId()}`.replaceAll(":","-");
+    const passwordDismiss = `paswordId${useId()}`.replaceAll(":","-");
 
     useEffect(()=>{
-        let passwordSubmitPanel = document.getElementById("PasswordModal");
+        let passwordSubmitPanel = document.getElementById(passwordModal);
         let input = document.getElementById(passwordInput);
         let ids = {"toggler":passwordToggler, "dismiss":passwordDismiss};
 
         passwordSubmitPanel?.addEventListener("shown.bs.modal", ()=>{
-            let input = document.getElementById(passwordInput) as HTMLInputElement;
-            input.focus();
+            let input = document.getElementById(passwordInput);
+            input?.focus();
         });
         
         passwordSubmitPanel?.addEventListener("hide.bs.modal",()=>{
@@ -30,7 +30,7 @@ function SubmitPassword({action, onSuccess, onFailure, onClose, parent, passId}:
 
         passId(ids);    
         
-    }, []);
+    });
 
     useEffect(()=>{
         if(keyTyped === "Enter")
@@ -55,7 +55,7 @@ function SubmitPassword({action, onSuccess, onFailure, onClose, parent, passId}:
 
     return (
         <>
-             <button data-bs-toggle='modal' id={passwordToggler} data-bs-target={`${passwordModal}`} style={{display:"none"}}></button>
+             <button data-bs-toggle='modal' id={passwordToggler} data-bs-target={`#${passwordModal}`} style={{display:"none"}}></button>
              <div className="modal fade" id={passwordModal} data-bs-backdrop="static" data-bs-keyboard="false">
                 <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
@@ -69,7 +69,7 @@ function SubmitPassword({action, onSuccess, onFailure, onClose, parent, passId}:
                            
                         </div>
                         <div className="modal-footer">
-                            <button type="button" id={passwordDismiss} data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target={parent?`#${parent}`:""} style={{display:"none"}}></button>
+                            <button type="button" id={passwordDismiss} data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target={parent?parent:""} style={{display:"none"}}></button>
                             <div className="btn-group" role="group">
                                 <button type="button" className="btn btn-outline-danger" onClick={onClose}>Cancelar</button>
                                 <button type="button" className="btn btn-outline-primary" onClick={submit}>Aceptar</button>

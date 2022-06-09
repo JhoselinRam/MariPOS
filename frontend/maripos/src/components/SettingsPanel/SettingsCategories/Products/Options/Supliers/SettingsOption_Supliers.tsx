@@ -48,7 +48,7 @@ function SettingsOption_Supliers(){
                                         <tbody>
                                             {list.map((item)=>{
                                                 return (
-                                                    <SuplierListItem item={item} onSelect={selectItem} selected={itemSelected}/>
+                                                    <SuplierListItem key={item["_id"]["$oid"]} item={item} onSelect={selectItem} selected={itemSelected}/>
                                                 );
                                             })}
                                         </tbody>
@@ -58,7 +58,7 @@ function SettingsOption_Supliers(){
                             <div className="modal-footer">
                                 <div className="btn-group" role="group">
                                     <button type="button" className="btn btn-outline-danger">Eliminar</button>     
-                                    <button type="button" className={`btn btn-outline-info ${itemSelected===""?"Disabled":""}`} data-bs-toggle="modal" data-bs-target="EditSuplierPanel">Editar</button>
+                                    <button type="button" className={`btn btn-outline-info ${itemSelected===""?"disabled":""}`} data-bs-toggle="modal" data-bs-target="#EditSuplierPanel">Editar</button>
                                     <button type="button" className="btn btn-outline-primary" data-bs-target="#NewSuplierPanel" data-bs-toggle="modal">Nuevo</button>
                                 </div>
                             </div>
@@ -68,6 +68,7 @@ function SettingsOption_Supliers(){
             </div> 
 
             <NewSuplier list={list}/>
+            <EditSuplier list={list} idItem={itemSelected}/>
         </>
         
     );

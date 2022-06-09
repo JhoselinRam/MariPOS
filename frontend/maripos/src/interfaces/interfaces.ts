@@ -23,3 +23,8 @@ export interface SuplierItemsProps{
     onSelect:(arg0:string)=>void, 
     selected:string
 }
+
+export interface EditSuplierProps{
+    list:SupliersList[],
+    idItem:string
+}

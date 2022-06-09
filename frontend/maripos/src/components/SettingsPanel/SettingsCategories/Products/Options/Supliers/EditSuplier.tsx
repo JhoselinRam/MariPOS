@@ -1,24 +1,25 @@
 import React, { useEffect, useState } from "react";
-import {SupliersList, SubmitPasswordResponse} from "../../../../../../interfaces/interfaces";
+import {EditSuplierProps, SubmitPasswordResponse} from "../../../../../../interfaces/interfaces";
 import SubmitPassword from "../../../../../SubmitPassword/SubmitPassword"
 
-type newSuplierProps = {
-    list:SupliersList[],
-    idItem:string
-};
 
-function EditSuplier({list, idItem}:newSuplierProps){
+function EditSuplier({list, idItem}:EditSuplierProps){
 
     const [validSuplier, setValidSuplier] = useState(false);
     const [validMessage, setValidMessage] = useState("");
+    const [passwordId, setPasswordId] = useState<{"toggler":string, "dismiss":string}>({"toggler":"", "dismiss":""});
 
     useEffect(()=>{
         let panel = document.getElementById("EditSuplierPanel");
         panel?.addEventListener("shown.bs.modal", ()=>{
-            let nameInput = document.getElementById("EditSuplierField");
-            nameInput?.focus();
+            let nameInput = document.getElementById("EditSuplierField") as HTMLInputElement;
+            let newRFCinput = document.getElementById("EditRFCField") as HTMLInputElement;
+            
+            nameInput.value = idItem!==""?list.filter(item=>item["_id"]["$oid"]===idItem)[0]["Descripcion"]:""
+            newRFCinput.value = idItem!==""?list.filter(item=>item["_id"]["$oid"]===idItem)[0]["RFC"]:""
+            nameInput.focus();
         })
-    }, []);
+    });
 
     function resetForm(){
         let newSuplierName = document.getElementById("EditSuplierField") as HTMLInputElement;
@@ -35,14 +36,22 @@ function EditSuplier({list, idItem}:newSuplierProps){
         let name = newSuplierName.value.toLowerCase().replaceAll(" ","");
         let rfc = newSuplierRFC.value.toLowerCase().replaceAll(" ","");
 
+
         for(let i=0; i<list.length;i++){
             let previousName = list[i]["Descripcion"].toLowerCase().replaceAll(" ","");
             let previousRFC = list[i]["RFC"].toLowerCase().replaceAll(" ","");
             
-            if(name===previousName && rfc===previousRFC){
-                setValidSuplier(false);
-                setValidMessage("Este proveedor ya existe");
-                return;
+            if(name === previousName){
+                if(list[i]["_id"]["$oid"] !== idItem){
+                    setValidSuplier(false);
+                    setValidMessage("Este proveedor ya existe");
+                    return;
+                }
+                else if(rfc === previousRFC){
+                    setValidSuplier(false);
+                    setValidMessage("Este proveedor ya existe");
+                    return;
+                }
             }
             if(name===""){
                 setValidSuplier(false);
@@ -56,7 +65,7 @@ function EditSuplier({list, idItem}:newSuplierProps){
     }
 
     function submitSuplier(){
-        let passwordButton = document.getElementsByClassName("submitPasswordToggler")[0] as HTMLButtonElement;
+        let passwordButton = document.getElementById(passwordId["toggler"]) as HTMLButtonElement;
         passwordButton.click();
     }
 
@@ -67,7 +76,7 @@ function EditSuplier({list, idItem}:newSuplierProps){
     }
 
     async function submitSuccessful(response:SubmitPasswordResponse){
-        let passwordButton = document.getElementsByClassName("submitPasswordToggler")[0] as HTMLButtonElement;
+        let passwordButton = document.getElementById(passwordId["toggler"]) as HTMLButtonElement;
         let newNameInput = document.getElementById("EditSuplierField") as HTMLInputElement
         let newRFCinput = document.getElementById("EditRFCField") as HTMLInputElement
         let newSuplierObject = [{"Descripcion":newNameInput.value,
@@ -89,8 +98,12 @@ function EditSuplier({list, idItem}:newSuplierProps){
     }
 
     function paswordClose(){
-        let passwordClose = document.getElementById("PasswordDismiss") as HTMLButtonElement;
+        let passwordClose = document.getElementById(passwordId["dismiss"]) as HTMLButtonElement;
         passwordClose.click();
+    }
+
+    function getPasswordId(id:{"toggler":string, "dismiss":string}){
+        setPasswordId(id);
     }
 
     return (
@@ -107,14 +120,14 @@ function EditSuplier({list, idItem}:newSuplierProps){
                                     <div className="row">
                                         <div className="col">
                                             <div className="form-floating">
-                                                <input type="text" className="form-control" id="EditSuplierField" placeholder="Proveedor" autoComplete="off" onInput={checkValidSuplier} value={idItem!==""?list.filter(item=>item["_id"]["$oid"]===idItem)[0]["Descripcion"]:""}/>
-                                                <label htmlFor="EditSuplierField">Proveedor</label>
+                                                <input type="text" className="form-control" id="EditSuplierField" placeholder="Proveedor" autoComplete="off" onInput={checkValidSuplier}/>
+                                                <label htmlFor="#EditSuplierField">Proveedor</label>
                                                 <div className="form-text text-danger ms-2">{validMessage}</div>
                                             </div>   
                                         </div>
                                         <div className="col">
                                             <div className="form-floating">
-                                                <input type="text" className="form-control" id="EditRFCField" placeholder="RFC" autoComplete="off" onInput={checkValidSuplier} value={idItem!==""?list.filter(item=>item["_id"]["$oid"]===idItem)[0]["RFC"]:""}/>
+                                                <input type="text" className="form-control" id="EditRFCField" placeholder="RFC" autoComplete="off" onInput={checkValidSuplier}/>
                                                 <label htmlFor="EditRFCField">RFC</label>
                                             </div>
                                         </div>
@@ -133,7 +146,7 @@ function EditSuplier({list, idItem}:newSuplierProps){
                 </div>
             </div>
 
-            
+            <SubmitPassword action={`${process.env.REACT_APP_ACTIONS_MODIFY_SUPLIER}`} onSuccess={submitSuccessful} onFailure={submitFailure} onClose={paswordClose} parent="#NewSuplierPanel" passId={getPasswordId} />
         </>        
     );
 }
