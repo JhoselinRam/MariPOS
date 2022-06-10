@@ -1,8 +1,7 @@
 export interface SupliersList{
     _id:{$oid:string},
     Descripcion:string,
-    RFC:string,
-    set?:boolean
+    RFC:string
 }
 
 export interface SubmitPasswordProps{
@@ -23,7 +22,8 @@ export interface SubmitPasswordResponse{
 export interface SuplierItemsProps{
     item:SupliersList, 
     onSelect:(arg0:string)=>void, 
-    selected:string
+    selected:string,
+    userInputCheck:(arg0:string)=>void
 }
 
 export interface EditSuplierProps{
