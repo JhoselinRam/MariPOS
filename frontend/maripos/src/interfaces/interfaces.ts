@@ -23,7 +23,8 @@ export interface SuplierItemsProps{
     item:SupliersList, 
     onSelect:(arg0:string)=>void, 
     selected:string,
-    userInputCheck:(arg0:string)=>void
+    userInputCheck:(arg0:string, arg1:string)=>void,
+    action:string;
 }
 
 export interface EditSuplierProps{
